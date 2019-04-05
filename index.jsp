@@ -1,0 +1,224 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+    <%@page import="model.Items"%>
+<%@page import="java.util.List"%>
+<%@page import="java.util.ArrayList" %>
+<%@page import="model.ItemsDAO"%>
+<%@page import="javax.servlet.annotation.MultipartConfig"%>
+<%@page import="javax.servlet.http.HttpSession"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+ 	<link rel="stylesheet" href="Style.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+   
+<title>OLX - Buy And Sell Anywhere In India For Free</title>
+</head>
+<body>
+		<div class="jumbotron">
+  <div class="container text-center">
+     <img src="https://upload.wikimedia.org/wikipedia/commons/4/42/OLX_New_Logo.png" id="icon" alt="OLX" height="20%" width="20%" />    
+    <p><i>Buy And Sell Anywhere In India For Free!</i></p>
+  </div>
+</div>
+
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>                        
+      </button>
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="#">Home</a></li>
+        <li><a href="#">Products</a></li>
+        <li><a href="#">Deals</a></li>
+        <li><a href="#">Stores</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+      
+	 <ul class="nav navbar-nav navbar-right">
+	 	<li>
+	 	<form class="navbar-form" id="search" role="search" method="post" action="">
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="keyword" placeholder="Search">
+                        </div>
+                        <!-- <button type="submit" class="btn btn-default">Submit</button> -->
+         </form>
+         </li>
+        <li><a href="Login.jsp"><span class="glyphicon glyphicon-user"></span>Login/Register</a></li>
+        <li><a href="#"><span class="glyphicon glyphicon-shopping-cart"></span>Cart</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<%
+List<Items> allItems = ItemsDAO.showEveryItem();
+HttpSession s = request.getSession();
+s.setAttribute("items" , allItems);
+s.getAttribute("items");
+String keyword="";
+%>
+
+<c:choose>
+<c:when test="${param.keyword !=\"\" }">
+<%
+if(request.getParameter("keyword")!=null)
+	keyword=request.getParameter("keyword");
+List<Items> i = new ArrayList<Items>();
+i = ItemsDAO.searchItem(keyword);
+out.print(keyword+" is printing");
+session.setAttribute("keyword", keyword);
+
+	
+out.print(keyword+" is after this");
+	
+	session = request.getSession();
+	session.setAttribute("product", i);
+%>
+ <c:set var="i" value="1" />
+   
+  <c:forEach var="p" items="${product}">
+  <c:choose>
+  	<c:when test="${i%4!=0 }">
+  		<div class="container">   
+  		<div class="row">
+   		<div class="col-sm-4">
+   		<div class="panel panel-primary">
+  		<div class="panel-heading">${p.itemName}</div>
+ 		<div class="panel-body"><img alt="img" width=200 height=200 src="data:image/jpeg;base64,${p.image}"/></div>
+ 		<div class="panel-footer"><a href="Login.jsp">BUY</a></div>
+		 		    </div>
+    </div>
+ </div>
+ </div>
+  	</c:when>
+  	<c:otherwise>
+	<br>
+	 		<div class="container">   
+  		<div class="row">
+   		<div class="col-sm-4">
+   		<div class="panel panel-primary">
+	<div class="panel-heading">${p.itemName}</div>
+ 		<div class="panel-body"><img alt="img" width=200 height=200 src="data:image/jpeg;base64,${p.image}"/></div>
+ 		<div class="panel-footer"><a href="Login.jsp">BUY</a></div>
+ 				 		    </div>
+    </div>
+ </div>
+ </div>
+  	</c:otherwise>
+  </c:choose>
+  
+  	<c:set var="i" value="${i+1 }" />
+  </c:forEach>
+  </c:when>
+  <c:otherwise>
+   <c:set var="i" value="1" />
+   
+  <c:forEach var="item" items="${items}">
+  <c:choose>
+  	<c:when test="${i%4!=0 }">
+  		<div class="container">   
+  		<div class="row">
+   		<div class="col-sm-4">
+   		<div class="panel panel-primary">
+  		<div class="panel-heading">${item.itemName}</div>
+ 		<div class="panel-body"><img alt="img" width=200 height=200 src="data:image/jpeg;base64,${item.image}"/></div>
+ 		<div class="panel-footer"><a href="Login.jsp">BUY</a></div>
+		 		    </div>
+    </div>
+ </div>
+ </div>
+  	</c:when>
+  	<c:otherwise>
+	<br>
+	 		<div class="container">   
+  		<div class="row">
+   		<div class="col-sm-4">
+   		<div class="panel panel-primary">
+	<div class="panel-heading">${item.itemName}</div>
+ 		<div class="panel-body"><img alt="img" width=200 height=200 src="data:image/jpeg;base64,${item.image}"/></div>
+ 		<div class="panel-footer"><a href="Login.jsp">BUY</a></div>
+ 				 		    </div>
+    </div>
+ </div>
+ </div>
+  	</c:otherwise>
+  </c:choose>
+  
+  	<c:set var="i" value="${i+1 }" />
+  </c:forEach>
+ 
+ </c:otherwise>
+ </c:choose>
+
+ 
+<div class="container">    
+  <div class="row">
+    <div class="col-sm-4">
+      <div class="panel panel-primary">
+        <div class="panel-heading">BLACK FRIDAY DEAL</div>
+        <div class="panel-body"><img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image"></div>
+        <div class="panel-footer">Buy 50 mobiles and get a gift card</div>
+      </div>
+    </div>
+    <div class="col-sm-4"> 
+      <div class="panel panel-danger">
+        <div class="panel-heading">BLACK FRIDAY DEAL</div>
+        <div class="panel-body"><img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image"></div>
+        <div class="panel-footer">Buy 50 mobiles and get a gift card</div>
+      </div>
+    </div>
+    <div class="col-sm-4"> 
+      <div class="panel panel-success">
+        <div class="panel-heading">BLACK FRIDAY DEAL</div>
+        <div class="panel-body"><img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image"></div>
+        <div class="panel-footer">Buy 50 mobiles and get a gift card</div>
+      </div>
+    </div>
+  </div>
+</div><br>
+
+<div class="container">    
+  <div class="row">
+    <div class="col-sm-4">
+      <div class="panel panel-primary">
+        <div class="panel-heading">BLACK FRIDAY DEAL</div>
+        <div class="panel-body"><img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image"></div>
+        <div class="panel-footer">Buy 50 mobiles and get a gift card</div>
+      </div>
+    </div>
+    <div class="col-sm-4"> 
+      <div class="panel panel-primary">
+        <div class="panel-heading">BLACK FRIDAY DEAL</div>
+        <div class="panel-body"><img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image"></div>
+        <div class="panel-footer">Buy 50 mobiles and get a gift card</div>
+      </div>
+    </div>
+    <div class="col-sm-4"> 
+      <div class="panel panel-primary">
+        <div class="panel-heading">BLACK FRIDAY DEAL</div>
+        <div class="panel-body"><img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image"></div>
+        <div class="panel-footer">Buy 50 mobiles and get a gift card</div>
+      </div>
+    </div>
+  </div>
+</div><br><br>
+
+<footer class="container-fluid text-center">  
+  <form class="form-inline">Get deals:
+    <input type="email" class="form-control" size="50" placeholder="Email Address">
+    <button type="button" class="btn btn-danger">Sign Up</button>
+  </form>
+</footer>
+
+</body>
+</html>
